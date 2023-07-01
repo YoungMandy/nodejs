@@ -7,6 +7,7 @@ const map = {
   1: 'rock',
   2: 'scissor',
   3: 'paper',
+  
 };
 
 let computerAction = map[random()];
