@@ -1,0 +1,1 @@
+process对象用于描述当前程序的状态，与console对象不同的是，process对象只在Node.js中存在，在Javascript中并不存在该对象。
