@@ -23,29 +23,29 @@ LimitableMap.prototype.set = function(key, value) {
      let oldCount = objCount[key] || 0;
 
      if (oldCount) {
-       globalMap[oldCount].delete(key);
+       globalMap[oldCount] = globalMap[oldCount].filter(item => item!== key);;
      }
     
 
-     let newCount = oldCount + 1;
+    let newCount = oldCount + 1;
     objCount[key] = newCount;
     
     if(!globalMap[newCount]) {
-      globalMap[newCount] = new Set();
+      globalMap[newCount] = [];
     }
 
-    globalMap[newCount].add(key);
+    globalMap[newCount].push(key);
     return newCount;
   }
 
-  if (!hasOwnProperty.call(objCount, key)) {//还没有存过这个对象
+  if (!hasOwnProperty.call(map, key)) {//还没有存过这个对象
     if (keys.size === this.limit) {// 到达限制了
-      let minSet = globalMap[this.min];// 找出现次数最小的
-      const removeItem = minSet.keys[0];
-      minSet.delete(removeItem);
+      let minArray = globalMap[this.min];// 找出现次数最小的
+      const removeItem = minArray.shift();// 删除第一个
+    
       keys.delete(removeItem);
 
-      delete objCount[removeItem];
+      // delete objCount[removeItem];
     }
 
     const newCount = updateCount();
@@ -70,12 +70,27 @@ LimitableMap.prototype.get = function (key) {
 
 const test = new LimitableMap();
 for (let i = 0; i < 10; i++){
-test.set(i+1);
+test.set(`key${i+1}`,'value');
 }
-debugger
 
-for (let i = 0; i < 10; i++) {
-  test.set(i + 1);
+
+for (let i = 5; i < 10; i++) {
+  test.set(`key${i + 1}`, 'value');
+}
+
+for (let i = 0; i < 3; i++) {
+ 
+  test.set(`key${i + 1}`, 'value');
+}
+
+for (let i = 0; i < 3; i++) {
+ 
+  test.set(`key${i + 1}`, 'value');
+}
+
+for (let i = 11; i < 13; i++) {
+ debugger
+  test.set(`key${i + 1}`, 'value');
 }
 
 
