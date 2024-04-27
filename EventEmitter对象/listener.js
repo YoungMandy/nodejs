@@ -1,19 +1,28 @@
 const rint = require('./rint.js');
 
-rint.once('tick', function() {
-  console.log(`第1次执行监听事件`)
+// rint.once('tick', function() {
+//   console.log(`第1次执行监听事件`)
+// })
+function listener (code) {
+
+  console.log(`第2次执行监听事件`,code)
+
+}
+
+rint.setMaxListeners(10);
+
+rint.on('tick1', listener);
+
+rint.on('tick1', listener);
+
+rint.on('tick', listener);
+rint.prependListener('tick', function() {
+  console.log('我要到达队伍前面');
 })
-// rint.on('tick', function(code) {
-//   console.log(`第2次执行监听事件`)
-// })
 
-// rint.on('tick', function(code) {
-//   console.log(`第3次执行监听事件`)
-// })
+console.log(rint.eventNames());
 
-// rint.on('tick', function(code) {
-//   console.log(`第4次执行监听事件`)
-// })
-// rint.prependListener('tick', function() {
-//   console.log('我要到达队伍前面');
-// })
+rint.removeListener('tick1', listener);
+rint.removeListener('tick1', listener);
+
+console.log('删除后',rint.eventNames());
