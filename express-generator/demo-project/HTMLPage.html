@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>选座购票</title>
+    <style>
+      .line {
+        overflow: hidden;
+      }
+
+      .seat {
+        margin: 2px;
+        float: left;
+        width: 40px;
+        height: 35px;
+      }
+
+      .seat img {
+        width: 40px;
+        height: 35px;
+      }
+    </style>
+    <script src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js"></script>
+  </head>
+
+  <body>
+    <h1>惊奇队长</h1>
+    <p>今天3月14日 16:00 英语3D</p>
+  </body>
+  <script>
+    const socket = new WebSocket('ws://127.0.0.1:52273');
+    socket.onopen = function (event) {
+      console.log('websocket连接已打开');
+    };
+
+    socket.onmessage = function (event) {
+
+      console.log('收到消息', event);
+      const obj = event.data.toString('utf-8');
+      const data = JSON.parse(obj);
+      console.log(data)
+
+
+
+      var $target = $('div[data-x = ' + data.x + '][data-y = ' + data.y + ']');
+      $target.removeClass('enable');
+      $target.addClass('disable');
+    };
+
+    // 向服务器发送消息
+    function sendMessage(message) {
+      socket.send(JSON.stringify(message));
+    }
+
+    //是否选择座位
+    $(document).ready(function () {
+      var onClickSeat = function () {
+        var x = $(this).attr('data-x');
+        var y = $(this).attr('data-y');
+        if (confirm('确定吗?')) {
+          $(this).off('click');
+          const data = { x: x, y: y };
+          console.log('需要发送的数据', data);
+          sendMessage(data);
+        } else {
+          alert('已取消！');
+        }
+      };
+
+      //执行Ajax
+      $.getJSON('/seats', { dummy: new Date().getTime() }, function (data) {
+        //生成座位
+        $.each(data, function (indexY, line) {
+          //生成HTML
+          var $line = $('<div></div>').addClass('line');
+          $.each(line, function (indexX, seat) {
+            var $output1 = $('<div></div>', {
+              class: 'seat',
+              'data-x': indexX,
+              'data-y': indexY,
+            }).appendTo($line);
+            var $output = $("< img src='image/seat.png' alt=''>");
+            if (seat == 1) {
+              $output1.addClass('enable').on('click', onClickSeat);
+              $output.appendTo($output1);
+            } else if (seat == 2) {
+              $output1.addClass('disable');
+              $output.appendTo($output1);
+              $output.attr('src', 'image/seat2.png');
+            }
+          });
+          $line.appendTo('body');
+        });
+      });
+    });
+  </script>
+  ​​
+</html>
+​​

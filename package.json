@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "express": "^4.19.2",
+    "express-generator": "^4.16.1",
+    "koa": "^2.15.3",
+    "ws": "^8.17.0"
+  }
+}
